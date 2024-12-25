@@ -51,3 +51,77 @@ The bot uses the following strategy:
 ## Logging
 
 The bot logs all activities to `trading_bot.log`. Monitor this file for detailed information about trades and errors.
+
+## Monitoring Logs
+
+The bot generates detailed logs in the `logs/` directory with different log files for different purposes:
+
+### Trading Activity Logs
+```bash
+# Watch real-time trading activity
+tail -f logs/trading_*.log
+
+# View last 100 lines of trading activity
+tail -n 100 logs/trading_*.log
+
+# Search for specific trading pair
+grep "BTCUSDT" logs/trading_*.log
+```
+
+### Error Logs
+```bash
+# Monitor errors in real-time
+tail -f logs/error_*.log
+
+# View all errors from today
+grep "$(date +%Y-%m-%d)" logs/error_*.log
+```
+
+### Performance Metrics
+```bash
+# Watch performance updates in real-time
+tail -f logs/performance_*.log
+
+# View all performance metrics from today
+grep "$(date +%Y-%m-%d)" logs/performance_*.log
+```
+
+### Log File Structure
+- `trading_*.log`: Contains all trading activities, signals, and order executions
+- `error_*.log`: Contains errors, warnings, and system issues
+- `performance_*.log`: Contains periodic performance metrics and statistics
+
+### Important Log Patterns
+- Buy Signals: Look for "Buy signal detected"
+- Sell Signals: Look for "Sell signal detected"
+- Profits/Losses: Search for "Trade resulted in"
+- Stop Loss/Take Profit: Search for "Stop Loss triggered" or "Take Profit triggered"
+
+### Log Rotation
+- Logs are rotated daily
+- Compressed after rotation
+- Kept for 30 days
+- Old logs are automatically deleted
+
+### Monitoring Multiple Files
+```bash
+# Watch all log files simultaneously with different colors
+tail -f logs/*.log | grep --color=always -E '^|error|warning|profit|loss'
+
+# Monitor specific trading pairs
+tail -f logs/trading_*.log | grep -E 'BTCUSDT|ETHUSDT'
+
+# Watch only profitable trades
+tail -f logs/trading_*.log | grep "resulted in profit"
+```
+
+### Performance Analysis
+```bash
+# Calculate total profit for today
+grep "resulted in profit" logs/trading_*.log | awk '{sum += $NF} END {print "Total profit: " sum}'
+
+# Count successful trades
+grep -c "Trade resulted in profit" logs/trading_*.log
+
+# View win rate
+grep "Win Rate" logs/performance_*.log | tail -n 1
